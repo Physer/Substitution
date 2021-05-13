@@ -20,6 +20,8 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.Configure<TokenData>(Configuration.GetSection(TokenData.ConfigurationEntry));
+
             services.RegisterBusinessDependencies();
         }
 

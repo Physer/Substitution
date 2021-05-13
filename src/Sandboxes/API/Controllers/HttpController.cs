@@ -1,7 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Substitution.Business.Interfaces;
-using System;
 using System.Threading.Tasks;
 
 namespace API.Controllers
@@ -12,13 +10,12 @@ namespace API.Controllers
     {
         private readonly IGenericHttpClient _genericHttpClient;
         private readonly ITypedHttpClient _typedHttpClient;
-        private readonly ITokenManager _tokenManager;
 
-        public HttpController(IGenericHttpClient genericHttpClient, ITypedHttpClient typedHttpClient, ITokenManager tokenManager)
+        public HttpController(IGenericHttpClient genericHttpClient, 
+            ITypedHttpClient typedHttpClient)
         {
             _genericHttpClient = genericHttpClient;
             _typedHttpClient = typedHttpClient;
-            _tokenManager = tokenManager;
         }
 
         [HttpGet("users/generic")]
