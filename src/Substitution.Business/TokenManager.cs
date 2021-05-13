@@ -1,4 +1,6 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
 using Substitution.Business.Interfaces;
 using System;
 using System.IdentityModel.Tokens.Jwt;
@@ -10,9 +12,16 @@ namespace Substitution.Business
 {
     public class TokenManager : ITokenManager
     {
-        public async Task<string> GetAccessToken() => throw new NotImplementedException();
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public async Task<string> GenerateAccessToken(string id, string secret, string signingSecret)
+        public TokenManager(IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
+
+        public async Task<string> GetAccessToken() => await _httpContextAccessor.HttpContext.GetTokenAsync("access_token");
+
+        public string GenerateAccessToken(string id, string secret, string signingSecret)
         {
             if (string.IsNullOrWhiteSpace(signingSecret))
                 return string.Empty;
@@ -22,6 +31,8 @@ namespace Substitution.Business
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[] { new Claim("sub", id) }),
+                Audience = "https://localhost:5001/",
+                Issuer = "https://localhost:5001/",
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

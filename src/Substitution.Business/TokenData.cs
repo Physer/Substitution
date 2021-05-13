@@ -1,4 +1,4 @@
-﻿namespace API
+﻿namespace Substitution.Business
 {
     public class TokenData
     {

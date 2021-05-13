@@ -19,10 +19,13 @@ namespace API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
-            services.Configure<TokenData>(Configuration.GetSection(TokenData.ConfigurationEntry));
+            var tokenDataConfigurationSection = Configuration.GetSection(TokenData.ConfigurationEntry);
+            services.Configure<TokenData>(tokenDataConfigurationSection);
 
-            services.RegisterBusinessDependencies();
+            var tokenData = tokenDataConfigurationSection.Get<TokenData>();
+            services.RegisterBusinessDependencies(tokenData);
+
+            services.AddControllers();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -34,6 +37,7 @@ namespace API
             }
 
             app.UseHttpsRedirection();
+            app.UseAuthentication();
             app.UseRouting();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
